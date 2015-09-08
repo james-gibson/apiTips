@@ -127,8 +127,29 @@ While you cant really do anything but suffer through the bad API's
     - Hate
 
 ---
+class: center, middle
+### This is where I can help
 
-##
+--
+
+#### Sounds great, where do we start?
+
+---
+
+## Fail fast, and fail hard
+
+  - Every ms that your request takes is time that adds up for the end user.
+  - Not every developer has the same level of restrictions that you do
+    - Some platforms impose timeout limits that cannot be raised
+    - Eating up transaction time with requests is a generally easy problem to fix.
+
+
+-- 
+
+### 40,000ms
+
+  - I have seen production web services(POST's can invoke invoices of thousands of dollars) that were considered acceptable to take 40+ seconds!+
+    Proper indexing of this service, at my coworker and myself's request, sped the request up to 200ms+
 
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
