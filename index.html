@@ -190,11 +190,16 @@ function verifyUserKey(req,res,next) {
 
 Validate API inputs early
 
+--
+However, returning `200 OK` for every request masks issues.
 ---
 
 class: center, middle
 ![Having a baby has really driven home how terrible it is when several issues result in the same error message ~ @andrewtraviss](http://content.screencast.com/users/JGibson443/folders/Snagit/media/9d796a34-3425-400f-a284-70276cb42809/2015-09-08_10-49-28.png)
 
+--
+There are use cases for returning a 200 OK on every request, but generally not for modern API development 
+  - Flash was a good example of this, the browsers would catch failed requests and not allow the runtime access to the underlying error.
 ---
 
 ## But Fail Gracefully
@@ -245,8 +250,32 @@ Some consumers actually won't have access to the underlying response status code
 while this is not required, it can make integrating with your API easier.
 
 ---
-  
+## Be remarkable
 
+--
+
+Operate under the principle of least surprise 
+  Developers that use your API are almost always on a time crunch
+  Respect their time and make learning your API a no brainer
+    This can be accomplished by providing working examples, good documentation and consistent assumptions
+    
+???
+I have worked with an API that required parameters be in a specific order, but that order was not enforced consistently  
+
+---
+
+## What now?
+
+[Richardson Maturity Model] (http://martinfowler.com/articles/richardsonMaturityModel.html)
+[Programmable Web](http://www.programmableweb.com/)
+
+--
+Feel free to reach out, to myself or other developers
+
+Twitter: @brainchildpro
+Denver Devs Slack: James.the.nodester
+
+---
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
     </script>
