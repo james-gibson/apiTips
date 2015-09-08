@@ -154,7 +154,8 @@ Proper indexing of this service, at my coworker and myself's request, sped the r
 ## Fail fast, and fail hard
 
 #### Slow way
-```JS
+
+```javascript
 function verifyUserKey(req,res,next) {
     var streamToken = req.query.id;
     var key = req.query.key;
@@ -164,11 +165,14 @@ function verifyUserKey(req,res,next) {
     next();
 }
 ```
+
 ---
+
 ## Fail fast, and fail hard
 
 - Validate API inputs early
-```JS
+
+```javascript
 function verifyUserKey(req,res,next) {
 *    //Fail before making database calls
 *    if(typeof key === "undefined"
@@ -185,13 +189,13 @@ function verifyUserKey(req,res,next) {
 }
 ```
 
-
 ---
+
 ## But Fail Gracefully
 
 - Validate API inputs early
 
-```JS
+```javascript
 function verifyUserKey(req,res,next) {
     if(typeof key === "undefined"
         || user === "undefined" {
@@ -207,16 +211,19 @@ function verifyUserKey(req,res,next) {
     next();
 }
 ```
----
 
-## 
+---
   
 
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
     </script>
     <script type="text/javascript">
-      var slideshow = remark.create();
+      var slideshow = remark.create({
+          highlightStyle: 'github',
+          highlightLanguage: 'javascript',
+          highlightLines: true
+        });
     </script>
   </body>
 </html>
