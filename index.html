@@ -197,6 +197,7 @@ function verifyUserKey(req,res,next) {
 
 ```javascript
 function verifyUserKey(req,res,next) {
+    //Fail before making database calls
     if(typeof key === "undefined"
         || user === "undefined" {
 *        res.statusCode = 401;
