@@ -234,7 +234,7 @@ function verifyUserKey(req,res,next) {
     if(typeof key === "undefined"
         || user === "undefined" {
          res.statusCode = 401;
-*         return res.json({message:"Invalid User and Key", "code":401});
+*        return res.json({message:"Invalid User and Key", "code":401});
     }
 
     var streamToken = req.query.id;
