@@ -173,8 +173,8 @@ function verifyUserKey(req,res,next) {
 ```javascript
 function verifyUserKey(req,res,next) {
 *    //Fail before making database calls
-*    if(typeof key === "undefined"
-*        || user === "undefined" {
+*    if(typeof req.query.key === "undefined"
+*        || req.query.user === "undefined" {
 *        return res.json({message:"Invalid User and Key"});
 *    }
 
@@ -210,8 +210,8 @@ Flash was a good example of this, the browsers would catch failed requests and n
 ```javascript
 function verifyUserKey(req,res,next) {
     //Fail before making database calls
-    if(typeof key === "undefined"
-        || user === "undefined" {
+    if(typeof req.query.key === "undefined"
+        || req.query.user === "undefined" {
 *        res.statusCode = 401;
          return res.json({message:"Invalid User and Key"});
     }
@@ -234,8 +234,8 @@ function verifyUserKey(req,res,next) {
 ```javascript
 function verifyUserKey(req,res,next) {
     //Fail before making database calls
-    if(typeof key === "undefined"
-        || user === "undefined" {
+    if(typeof req.query.key === "undefined"
+        || req.query.user === "undefined" {
          res.statusCode = 401;
 *        return res.json({message:"Invalid User and Key", "code":401});
     }
