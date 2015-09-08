@@ -137,20 +137,79 @@ class: center, middle
 
 ---
 
-## Fail fast, and fail hard
+### 40,000ms is a loooong time
 
   - Every ms that your request takes is time that adds up for the end user.
   - Not every developer has the same level of restrictions that you do
     - Some platforms impose timeout limits that cannot be raised
     - Eating up transaction time with requests is a generally easy problem to fix.
 
+???
+I have seen production web services(POST's can invoke invoices of thousands of dollars) that were considered acceptable to take 40+ seconds!+
 
--- 
+Proper indexing of this service, at my coworker and myself's request, sped the request up to 200ms+
 
-### 40,000ms
+---
 
-  - I have seen production web services(POST's can invoke invoices of thousands of dollars) that were considered acceptable to take 40+ seconds!+
-    Proper indexing of this service, at my coworker and myself's request, sped the request up to 200ms+
+## Fail fast, and fail hard
+
+#### Slow way
+```JS
+function verifyUserKey(req,res,next) {
+    var streamToken = req.query.id;
+    var key = req.query.key;
+    var token = authModel.getToken(user,key);
+    if(!token) { return res.json({message:"Invalid User and Key"}); }
+    req.token = token;
+    next();
+}
+```
+---
+## Fail fast, and fail hard
+
+- Validate API inputs early
+```JS
+function verifyUserKey(req,res,next) {
+*    //Fail before making database calls
+*    if(typeof key === "undefined"
+*        || user === "undefined" {
+*        return res.json({message:"Invalid User and Key"});
+*    }
+
+    var streamToken = req.query.id;
+    var key = req.query.key;
+    var token = authModel.getToken(user,key);
+
+    req.token = token;
+    next();
+}
+```
+
+
+---
+## But Fail Gracefully
+
+- Validate API inputs early
+```JS
+function verifyUserKey(req,res,next) {
+    if(typeof key === "undefined"
+        || user === "undefined" {
+*        res.statusCode = 401;
+*        return res.json({message:"Invalid User and Key", code:401});
+    }
+
+    var streamToken = req.query.id;
+    var key = req.query.key;
+    var token = authModel.getToken(user,key);
+
+    req.token = token;
+    next();
+}
+```
+---
+
+## 
+  
 
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
