@@ -197,10 +197,12 @@ However, returning `200 OK` for every request masks issues.
 class: center, middle
 ![Having a baby has really driven home how terrible it is when several issues result in the same error message ~ @andrewtraviss](http://content.screencast.com/users/JGibson443/folders/Snagit/media/9d796a34-3425-400f-a284-70276cb42809/2015-09-08_10-49-28.png)
 
----
+--
 
-- There are use cases for returning a 200 OK on every request, but generally not for modern API development 
-  - Flash was a good example of this, the browsers would catch failed requests and not allow the runtime access to the underlying error.
+There are use cases for returning a 200 OK on every request, but generally not for modern API development 
+
+
+Flash was a good example of this, the browsers would catch failed requests and not allow the runtime access to the underlying error.
 ---
 
 ## But Fail Gracefully
