@@ -209,7 +209,6 @@ class: center, middle
 There are use cases for returning a 200 OK on every request, but generally not for modern API development 
 
 
-Flash was a good example of this, the browsers would catch failed requests and not allow the runtime access to the underlying error.
 ---
 
 ## But Fail Gracefully
@@ -258,6 +257,8 @@ function verifyUserKey(req,res,next) {
 
 Some consumers actually won't have access to the underlying response status code
 while this is not required, it can make integrating with your API easier.
+
+Flash was a good example of this, the browsers would catch failed requests and not allow the runtime access to the underlying error.
 
 ---
 ## Be remarkable
