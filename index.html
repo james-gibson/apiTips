@@ -153,8 +153,6 @@ Proper indexing of this service, at my coworker and myself's request, sped the r
 
 ## Fail fast, and fail hard
 
-#### Slow way
-
 ```javascript
 function verifyUserKey(req,res,next) {
     var streamToken = req.query.id;
@@ -166,11 +164,11 @@ function verifyUserKey(req,res,next) {
 }
 ```
 
+#### Horrible example, lets fix it up
+
 ---
 
 ## Fail fast, and fail hard
-
-- Validate API inputs early
 
 ```javascript
 function verifyUserKey(req,res,next) {
@@ -189,11 +187,18 @@ function verifyUserKey(req,res,next) {
 }
 ```
 
+
+Validate API inputs early
+
 ---
 
 ## But Fail Gracefully
 
-- Validate API inputs early
+![Having a baby has really driven home how terrible it is when several issues result in the same error message ~ @andrewtraviss](http://content.screencast.com/users/JGibson443/folders/Snagit/media/9d796a34-3425-400f-a284-70276cb42809/2015-09-08_10-49-28.png)
+
+---
+
+## But Fail Gracefully
 
 ```javascript
 function verifyUserKey(req,res,next) {
@@ -201,7 +206,7 @@ function verifyUserKey(req,res,next) {
     if(typeof key === "undefined"
         || user === "undefined" {
 *        res.statusCode = 401;
-*        return res.json({message:"Invalid User and Key", code:401});
+         return res.json({message:"Invalid User and Key"});
     }
 
     var streamToken = req.query.id;
@@ -212,6 +217,33 @@ function verifyUserKey(req,res,next) {
     next();
 }
 ```
+
+[HTTP status codes exist](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes), use them!
+
+---
+
+## And Impress your consumers
+
+```javascript
+function verifyUserKey(req,res,next) {
+    //Fail before making database calls
+    if(typeof key === "undefined"
+        || user === "undefined" {
+         res.statusCode = 401;
+*         return res.json({message:"Invalid User and Key", "code":401});
+    }
+
+    var streamToken = req.query.id;
+    var key = req.query.key;
+    var token = authModel.getToken(user,key);
+
+    req.token = token;
+    next();
+}
+```
+
+Some consumers actually won't have access to the underlying response status code
+while this is not required, it can make integrating with your API easier.
 
 ---
   
