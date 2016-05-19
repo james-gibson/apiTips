@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Awesome Presentation</title>
+    <title>A Proper API Crash Course</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
       @import url(http://fonts.googleapis.com/css?family=Inconsolata);
       @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
       @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
-      body { font-family: 'Droid Serif'; }
+      body { font-family: 'Inconsolata'; }
       h1, h2, h3 {
-        font-family: 'Yanone Kaffeesatz';
+        font-family: 'Inconsolata';
         font-weight: normal;
       }
-      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code, .remark-inline-code { font-family: 'Inconsolata'; }
     </style>
   </head>
   <body>
@@ -24,26 +24,297 @@ class: center, middle
 
 ???
 
-Notes for the _first_ slide!
+Introduce myself
 
 ---
 
-# Agenda
+# Who am I?
 
-1. Introduction
-2. Deep-dive
-3. ...
+- Currently working as the lead developer at Apto
+- 4 years software engineering, 11 years programming
 
-[NOTE]: Note that you need remark.js alongside this html file, but no internet connection.
+- Twitter: @brainchildpro
+
+- Github: james-gibson
+
+- Denver Devs Slack: james.the.nodester
+
+### API Credentials
+
+- Building self hosted home automation software
+- Built and maintained a system to display the worldwide energy usage of the US NAVY
+- Migrated a v0 to v1 for an indoor location analytics software
+- Consulted on skunkworks API design for a Fortune 25 company
+
+---
+# Define a few things
+
+- Wikipedia defines an API as:
+
+```Text
+In computer programming, an application programming interface (API) is a set
+of routines, protocols, and tools for building software applications. An API
+expresses a software component in terms of its operations, inputs, outputs, 
+and underlying types.
+```
+
+--
+
+- In practice an API is:
+
+```Text
+Getting system A to do work for system B
+```
+???
+Now you might be asking what do I mean?
 ---
 
-# Introduction
+## What do you mean do work?
 
+--
+
+- An API can tell you the weather (forcast.io)
+
+--
+
+- An API can give you directions (Google Maps)
+
+--
+
+- An API can give you awesome music (Soundcloud)
+
+--
+
+## But these sound trivial
+
+--
+
+- An API can help you find a house (Zillow)
+
+--
+
+- An API can give you control over your entire production deployment (Amazon EC2)
+
+--
+
+- An API can give you insight into natural language (Alchemy API)
+
+---
+class: center, middle
+## So API's are awesome right?
+
+--
+
+# Not Always!
+
+---
+
+## Huh?
+
+- Not all API's are created equally
+
+- You may have the chance to work on really well designed API's
+
+--
+
+## but...
+
+--
+
+- You will more then likely have to work on really bad API's
+
+???
+
+While you cant really do anything but suffer through the bad API's
+
+---
+
+## Avoid the common pitfalls
+
+- Many common mistakes occur simply due to lack of experience
+
+--
+
+- You can either make an API that developers either:
+
+---
+
+- Hate
+
+  - ![](http://content.screencast.com/users/JGibson443/folders/Snagit/media/29650cec-a8dc-4a3d-b794-cf6af537732b/2015-09-08_12-19-02.png)
+
+---
+
+- Rave Over
+
+  - ![](http://www.subtraction.com/wp-content/uploads/2014/04/2014-04-27-marvel-developer-api-410x305.jpg)
+
+---
+
+class: center, middle
+### This is where I can help
+
+--
+
+#### Sounds great, where do we start?
+
+---
+
+### 40,000ms is a loooong time
+
+  - Every ms that your request takes is time that adds up for the end user.
+  - Not every developer has the same level of restrictions that you do
+    - Some platforms impose timeout limits that cannot be raised
+    - Eating up transaction time with requests is a generally easy problem to fix.
+
+???
+I have seen production web services(POST's can invoke invoices of thousands of dollars) that were considered acceptable to take 40+ seconds!+
+
+Proper indexing of this service, at my coworker and myself's request, sped the request up to 200ms+
+
+---
+
+## Fail fast, and fail hard
+
+```javascript
+function verifyUserKey(req,res,next) {
+    var streamToken = req.query.id;
+    var key = req.query.key;
+    var token = authModel.getToken(user,key);
+    if(!token) { return res.json({message:"Invalid User and Key"}); }
+    req.token = token;
+    next();
+}
+```
+
+#### Horrible example, lets fix it up
+
+---
+
+## Fail fast, and fail hard
+
+```javascript
+function verifyUserKey(req,res,next) {
+*    //Fail before making database calls
+*    if(typeof req.query.key === "undefined"
+*        || req.query.user === "undefined" {
+*        return res.json({message:"Invalid User and Key"});
+*    }
+
+    var streamToken = req.query.id;
+    var key = req.query.key;
+    var token = authModel.getToken(user,key);
+
+    req.token = token;
+    next();
+}
+```
+
+
+Validate API inputs early
+
+--
+However, returning `200 OK` for every request masks issues.
+---
+
+class: center, middle
+![Having a baby has really driven home how terrible it is when several issues result in the same error message ~ @andrewtraviss](http://content.screencast.com/users/JGibson443/folders/Snagit/media/9d796a34-3425-400f-a284-70276cb42809/2015-09-08_10-49-28.png)
+
+--
+
+There are use cases for returning a 200 OK on every request, but generally not for modern API development 
+
+
+---
+
+## But Fail Gracefully
+
+```javascript
+function verifyUserKey(req,res,next) {
+    //Fail before making database calls
+    if(typeof req.query.key === "undefined"
+        || req.query.user === "undefined" {
+*        res.statusCode = 401;
+         return res.json({message:"Invalid User and Key"});
+    }
+
+    var streamToken = req.query.id;
+    var key = req.query.key;
+    var token = authModel.getToken(user,key);
+
+    req.token = token;
+    next();
+}
+```
+
+[HTTP status codes exist](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes), use them!
+
+---
+
+## And Impress your consumers
+
+```javascript
+function verifyUserKey(req,res,next) {
+    //Fail before making database calls
+    if(typeof req.query.key === "undefined"
+        || req.query.user === "undefined" {
+         res.statusCode = 401;
+*        return res.json({message:"Invalid User and Key", "code":401});
+    }
+
+    var streamToken = req.query.id;
+    var key = req.query.key;
+    var token = authModel.getToken(user,key);
+
+    req.token = token;
+    next();
+}
+```
+
+Some consumers actually won't have access to the underlying response status code
+while this is not required, it can make integrating with your API easier.
+
+Flash was a good example of this, the browsers would catch failed requests and not allow the runtime access to the underlying error.
+
+---
+## Be remarkable
+
+--
+
+- Operate under the principle of least surprise 
+  - Developers that use your API are almost always on a time crunch
+  - Respect their time and make learning your API a no brainer
+    - This can be accomplished by providing working examples, good documentation and consistent assumptions
+    
+???
+I have worked with an API that required parameters be in a specific order, but that order was not enforced consistently  
+
+---
+
+## What now?
+
+- [Richardson Maturity Model](http://martinfowler.com/articles/richardsonMaturityModel.html)
+
+- [Programmable Web](http://www.programmableweb.com/)
+
+--
+
+- Feel free to reach out, to myself or other developers
+
+  - Twitter: @brainchildpro
+
+  - Denver Devs Slack: james.the.nodester
+
+---
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
     </script>
     <script type="text/javascript">
-      var slideshow = remark.create();
+      var slideshow = remark.create({
+          highlightStyle: 'github',
+          highlightLanguage: 'javascript',
+          highlightLines: true
+        });
     </script>
   </body>
 </html>
